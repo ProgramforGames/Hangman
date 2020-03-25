@@ -1,6 +1,6 @@
-//*using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;//*
+using UnityEngine;
 //delete the // for copy into unity file
 
 public class HangMan : MonoBehaviour
