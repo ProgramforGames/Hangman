@@ -5,16 +5,27 @@ using UnityEngine;
 
 public class HangMan : MonoBehaviour
 {
-    public string[] words;
+    string[] words;
 
     public int Lives = 10; 
     private string wordsInput = "";
     private string wordsGuess = "";
     private string wordsShows = "";
 
+    void wordsInput ()
+    {
+        words = new int [5];
+        words[0] = chair;
+        words[1] = table;
+        words[2] = bench;
+        words[3] = spoon;
+        words[4] = choir;
+
+    }
+
     private void OnScreen ()
     {
-        if (Lives >0 && )
+        if (Lives >0 )
         {
             
         }
@@ -33,7 +44,6 @@ public class HangMan : MonoBehaviour
 
         }
     }
-
 
 
 }
