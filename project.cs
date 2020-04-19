@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+using System;
 using System.Text;
 
 public class HangMan : MonoBehaviour
@@ -21,30 +21,60 @@ public class HangMan : MonoBehaviour
         words[2] = bench;
         words[3] = spoon;
         words[4] = choir;
-
+        
     }
 
+    
+    
     private void OnScreen ()
-    {
-        if (Lives >0 )
-        {
-            
-        }
-        else
-        {
-            print ("Game Over");
+    {   
+        string secretWords = wordsInput[0];
 
+        int secretWords = secretWords.Length;
+        Console.Write("Your secret word is:");
+        for (int i=0; i<secretWords; i++)
+                Console.Write("*");
+            Console.Write();
+
+
+        while (true)
+        {
+           for (int i = 0; i < wordsShows.Length; i++) 
+            {
+                if (i < secretWord.Length && i < choice.Length)
+                {
+                    if (wordsInput[i] == words[i])
+                    Console.Write(words[i]);
+                    else
+                    Console.Write("*");
+                }
+                else 
+                Console.Write("*");
+            }
+            Console.WriteLine();
+        }
+
+
+        {
+          if (Lives >0 )
+           {
+              Console.write("Try Again");
+           }
+          else
+          {
+             chanceGuess = true;
+
+         }
+
+         if (chanceGuess = true)
+         {
+             Console.Write("You lose");
+         }
+         else
+            {
+                Console.Write("Correct Answer");
+            }
         }
     }
-
-
-    private void wordsCheck(char c)
-    {
-        for (int i = 0; i < wordsShows.Length; i++) ;
-        {
-
-        }
-    }
-
 
 }
