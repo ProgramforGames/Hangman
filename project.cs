@@ -53,7 +53,7 @@ public class HangMan : MonoBehaviour
         string hintWords = wordsHint.text;
         wordsHint.text = "Word Length: " + wordLastPick.Length;
     
-
+        //This part have bug
         char letter = guessInput.text.ToCharArray()[0];
         for (int i=0; i<wordPick.Length; i++)
         {
