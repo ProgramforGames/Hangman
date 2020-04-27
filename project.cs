@@ -4,15 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Text;
-using System.Linq;
 
 public class HangMan : MonoBehaviour
 {
      public Text messageText;
      public InputField guessInput;
      public Text systemMessage;
-     public string wordtoGuess;
-     public string hiddenWord;
+     public string wordtoGuess; // correct answer
+     public string hiddenWord;  // answer submitted by player, will update one by one per input
      //Player chance can change
      public int playerLives = 10;
      public Text livesWindow;
@@ -20,29 +19,31 @@ public class HangMan : MonoBehaviour
      public Text wordsHint;
      public Button submitButton;
      public Text wordsWrongShow;
+     public Text inputWrongChar;
+     public List<char> wrongChar= new List<char>();
 
-
-     
      //Words used (can put in more)
-     string[] wordUsed = 
+     string[] dictionary = 
         {
-            "Chair",
-            "Table",
-            "Bench",
-            "Spoon",
-            "Choir",
-            "Mouse",
-            "Phone",
-            "Money"
+            "chair",
+            "table",
+            "bench",
+            "spoon",
+            "choir",
+            "mouse",
+            "phone",
+            "money"
         };
+
     //Random generate words
     void wordsArray()
     {
+        // Get random word
        System.Random random = new System.Random();
-       int wordChoose = random.Next(wordUsed.Length);
-       string wordPick = wordUsed[wordChoose];
+       int index = random.Next(dictionary.Length);
+       string wordPicked = dictionary[index];
        
-       char[] chars = wordPick.ToCharArray();
+       char[] chars = wordPicked.ToCharArray();
        for (int i=0; i<chars.Length; i++)
        {
            chars[i] = '_';
@@ -50,19 +51,11 @@ public class HangMan : MonoBehaviour
 
         string wordLastPick = new string (chars);
         
-        string hintWords = wordsHint.text;
+        // string hintWords = wordsHint.text;
         wordsHint.text = "Word Length: " + wordLastPick.Length;
     
-        //This part have bug
-        char letter = guessInput.text.ToCharArray()[0];
-        for (int i=0; i<wordPick.Length; i++)
-        {
-            if (wordPick[i] == letter)
-                chars[i] = letter;
-        }
-
         hiddenWord = wordLastPick;
-        wordtoGuess = wordPick;
+        wordtoGuess = wordPicked;
     }
 
 
@@ -70,7 +63,7 @@ public class HangMan : MonoBehaviour
     void wordsShows()
     {
         string plWords = showWords.text;
-        showWords.text = hiddenWord;
+        showWords.text = hiddenWord; // the display will get from hiddenWord variable
     }
 
     //Print wrong words
@@ -98,26 +91,58 @@ public class HangMan : MonoBehaviour
     //Message indicate player guess right or wrong
     public void GetGuess()
     {
-        string guessString = guessInput.text;
+        string guessString = guessInput.text.ToLower(); // player input
+        string hiddenString = showWords.text; // player result, started wit '______'
+        showWords.text = hiddenWord;
+        char inputChar = guessString.ToCharArray()[0];
+        char[] charGuess = hiddenString.ToCharArray();
+        char[] correctAnswer = wordtoGuess.ToCharArray(); // get correct answer
+        bool isInputCorrect = false;
         if (playerLives>0)
         {
-            if (guessString == wordtoGuess)
-        {
-            systemMessage.text = "You Guess it right";
-            playerLives =11 ;
-        }
-        else 
-            systemMessage.text = "Try again";
-            playerLives--;
-        }
-        
+            for(int i = 0; i < correctAnswer.Length; i++)
+            {   
+                if(correctAnswer[i] == inputChar)
+                {
+                    charGuess[i] = inputChar; 
+                    isInputCorrect = true;
+                }
+            }
 
-        if (playerLives <= 0)
+            if(isInputCorrect)
+            {
+                hiddenWord = new string(charGuess); 
+                // update back to hidden word
+                // because you didnt update back the word
+                // so after the input is correct, need to update back the word lo
+            }
+            else 
+            {
+                systemMessage.text = "Wrong input, try again";
+                string plWrong = inputWrongChar.text;
+                inputWrongChar.text += inputChar + ", ";
+                playerLives--;
+               
+            }
+        }
+
+        if (playerLives <=0)
         {
-            systemMessage.text = "Game Over\n\nThe words is " + wordtoGuess + "\n\nTry hard next time";
+           systemMessage.text = "Game Over\n\nThe words is " + wordtoGuess + "\n\nTry hard next time";
             GameOver();
         }
 
+    }
+
+    void nextLevel()
+    {
+        if (wordtoGuess==hiddenWord && playerLives>0)
+        {
+            systemMessage.text = "Correct\n\nThe answer is " + wordtoGuess;
+            playerLives = 10;
+            inputWrongChar.text = " ";
+            wordsArray();
+        }
     }
 
     //Destroy buttons and text object
@@ -125,6 +150,7 @@ public class HangMan : MonoBehaviour
     {
         guessInput.gameObject.SetActive(false);
         submitButton.gameObject.SetActive(false);
+        wordsHint.gameObject.SetActive(false);
     }
 
 
@@ -139,6 +165,7 @@ public class HangMan : MonoBehaviour
     void Update()
     {
        wordsShows();
+       nextLevel();
        Lives();
        wordsWrong();
     }
